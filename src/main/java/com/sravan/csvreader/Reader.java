@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import com.sravan.connection.ConnectDB;
+import com.sravan.thread.ThreadScheduler;
 
 public class Reader {
 
@@ -14,17 +17,23 @@ public class Reader {
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = ",";
-
+int k=0;
+        ThreadScheduler t =new ThreadScheduler();
         try {
 
             br = new BufferedReader(new FileReader(csvFile));
             while ((line = br.readLine()) != null) {
 
+            	
 
                 // use comma as separator
                 String[] detail = line.split(cvsSplitBy);
 
-                detailPopulate(detail);
+                t.getNumber(k,detail);
+               k++;
+               if(k==10){
+            	   k=0;
+               }
 
             }
 
@@ -44,7 +53,8 @@ public class Reader {
 
 	}
 
-	private void detailPopulate(String[] detail) {
+
+	public static void detailPopulate(String[] detail) {
 		// TODO Auto-generated method stub
 		
 		new ConnectDB().connection(detail);
