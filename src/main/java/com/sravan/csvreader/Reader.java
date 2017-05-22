@@ -6,8 +6,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.sravan.connection.ConnectDB;
+import com.sravan.executorpool.WorkerThread;
 import com.sravan.thread.ThreadScheduler;
 
 public class Reader {
@@ -17,8 +20,9 @@ public class Reader {
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = ",";
-int k=0;
-        ThreadScheduler t =new ThreadScheduler();
+
+ExecutorService executor = Executors.newFixedThreadPool(5);
+   
         try {
 
             br = new BufferedReader(new FileReader(csvFile));
@@ -29,12 +33,12 @@ int k=0;
                 // use comma as separator
                 String[] detail = line.split(cvsSplitBy);
 
-                t.getNumber(k,detail);
-               k++;
-               if(k==10){
-            	   k=0;
-               }
-
+                
+                    Runnable worker = new WorkerThread(detail);
+                    executor.execute(worker);
+                
+                
+             
             }
 
         } catch (FileNotFoundException e) {
@@ -54,7 +58,7 @@ int k=0;
 	}
 
 
-	public static void detailPopulate(String[] detail) {
+	public void detailPopulate(String[] detail) {
 		// TODO Auto-generated method stub
 		
 		new ConnectDB().connection(detail);

@@ -20,7 +20,7 @@ public class ThreadScheduler extends Thread {
 
 	public void run() {
 
-		Reader.detailPopulate(getDetail());
+		//Reader.detailPopulate(getDetail());
 
 	}
 
